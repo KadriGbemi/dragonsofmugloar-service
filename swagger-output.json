@@ -28,33 +28,24 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
           }
         }
       }
     },
-    "/game/{gameId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "gameId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/game/{gameId}/restart": {
+    "/game/{playerId}/restart/{gameId}": {
       "post": {
         "description": "",
         "parameters": [
           {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "gameId",
             "in": "path",
             "required": true,
@@ -62,8 +53,14 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
           }
         }
       }
@@ -128,7 +125,7 @@
         }
       }
     },
-    "/shop/{gameId}": {
+    "/shop/list/{gameId}": {
       "get": {
         "description": "",
         "parameters": [

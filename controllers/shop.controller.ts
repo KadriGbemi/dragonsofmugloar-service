@@ -1,7 +1,8 @@
 import { type NextFunction, type Request, type Response } from "express";
 import type { PurchaseShopItemParams } from "../types/shop.types.ts";
 import { ShopService } from "../services/shop.service.ts";
-import type { GameIdRequestParams } from "../types/index.types.ts";
+import type { GameIdRequestParams, GamesDBResponse } from "../types/index.types.ts";
+import { database } from "../config/db.ts";
 
 const shopService = new ShopService();
 
@@ -9,9 +10,9 @@ export async function getShopItems(req: Request<GameIdRequestParams>, res: Respo
   try {
     const { gameId } = req.params;
 
-    if(gameId) {
+    if (gameId) {
       const items = await shopService.getShopItems(gameId);
-      res.json(items);
+      return res.json(items);
     }
   } catch (error) {
     next(error);
@@ -29,7 +30,15 @@ export async function purchaseShopItem(
     if (gameId && itemId) {
       const result = await shopService.purchaseShopItem(gameId, itemId);
 
-      res.json(result);
+        const games = database.db().collection<GamesDBResponse>("games");
+
+        await games.updateOne(
+          { gameId },
+          { $set: { ...result } },
+        );
+     
+
+      return res.json(result);
     }
 
   } catch (error) {

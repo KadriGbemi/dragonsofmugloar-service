@@ -6,7 +6,7 @@ import {
 
 const router = Router();
 
-router.get("/:gameId", getShopItems);
+router.get("/list/:gameId", getShopItems);
 router.post("/:gameId/buy/:itemId", purchaseShopItem);
 
 export default router;

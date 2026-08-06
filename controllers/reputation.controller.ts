@@ -14,7 +14,7 @@ export async function investigateReputation(
 
     if (gameId) {
       const reputationResponse = await reputationService.investigateReputation(gameId);
-      res.status(201).json(reputationResponse);
+      return res.status(201).json(reputationResponse);
     }
   } catch (error) {
     next(error);
