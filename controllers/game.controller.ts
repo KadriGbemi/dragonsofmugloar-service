@@ -2,7 +2,7 @@ import { type NextFunction, type Request, type Response } from "express";
 import { GameService } from "../services/game.service.ts";
 import type { StartGameRequestParams } from "../types/game.types.ts";
 import type { GamesDBResponse } from "../types/index.types.ts";
-import { database } from "../config/db.ts";
+import { database } from "../db/config.db.ts";
 import { MongoServerError } from "mongodb";
 
 const gameService = new GameService();
@@ -82,6 +82,32 @@ export async function nextGame(
 
     return res.success({ ...game, playerName, id: result.insertedId, playerId });
 
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+export async function gameHistory(req: Request<StartGameRequestParams>, res: Response, next: NextFunction) {
+  try {
+    const { playerName } = req.params;
+
+    if (!playerName) {
+      return res.error("Player name is required", 400);
+    }
+
+    const games = database.db().collection<GamesDBResponse>("games");
+    const results = await games
+      .find({ playerName })
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    if (results.length === 0) {
+      return res.error("No games found for this player", 404);
+    }
+
+    return res.success(results);
 
   } catch (error) {
     next(error);

@@ -12,8 +12,9 @@ import gameRouter from "../routes/game.routes.ts";
 import reputationRouter from "../routes/reputation.routes.ts";
 import adsRouter from "../routes/ads.routes.ts";
 import shopRouter from "../routes/shop.routes.ts";
-import { database } from "../config/db.ts";
+import { database } from "../db/config.db.ts";
 import { responseMiddleware } from "../middleware/response.middleware.ts";
+import { addDBIndexes } from "../db/indexes.db.ts";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -49,6 +50,7 @@ swaggerAutogen()(outputFile, endpointsFiles, swaggerDoc).then(async () => {
 
   // Connect to MongoDB before accepting traffic
   await database.connect();
+  await addDBIndexes(database.db());
 
   // Start the server
   const server = app.listen(3000, () => {

@@ -3,7 +3,7 @@ import type { SolveAdRequestParams } from "../types/ads.types.ts";
 import type { GameIdRequestParams, GamesDBResponse } from "../types/index.types.ts";
 
 import { AdsService } from "../services/ads.service.ts";
-import { database } from "../config/db.ts";
+import { database } from "../db/config.db.ts";
 
 const adsService = new AdsService();
 
@@ -30,7 +30,7 @@ export async function solveAd(
 
     const games = database.db().collection<GamesDBResponse>("games");
 
-    const {success, ...result} = await adsService.solveAd(gameId, adId);
+    const { success, ...result } = await adsService.solveAd(gameId, adId);
 
 
     await games.updateOne(

@@ -2,7 +2,7 @@ import { type NextFunction, type Request, type Response } from "express";
 import type { PurchaseShopItemParams } from "../types/shop.types.ts";
 import { ShopService } from "../services/shop.service.ts";
 import type { GameIdRequestParams, GamesDBResponse } from "../types/index.types.ts";
-import { database } from "../config/db.ts";
+import { database } from "../db/config.db.ts";
 
 const shopService = new ShopService();
 
@@ -30,12 +30,12 @@ export async function purchaseShopItem(
     if (gameId && itemId) {
       const result = await shopService.purchaseShopItem(gameId, itemId);
 
-        const games = database.db().collection<GamesDBResponse>("games");
+      const games = database.db().collection<GamesDBResponse>("games");
 
-        await games.updateOne(
-          { gameId },
-          { $set: { ...result } },
-        );
+      await games.updateOne(
+        { gameId },
+        { $set: { ...result } },
+      );
 
       return res.success(result);
     }

@@ -40,7 +40,7 @@ export class DragonsOfMugloarAPIClient {
     if (error.response) {
       if (error.response.status === 404) {
         return {
-          success: false, error: { message: "Game not found or game expired.", status: 404, type: "expired" }
+          success: false, error: { message: "Game not found or game expired. Start new game.", status: 404, type: "expired" }
         };
       }
 

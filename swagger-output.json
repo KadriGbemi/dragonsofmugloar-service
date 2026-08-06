@@ -53,6 +53,24 @@
         }
       }
     },
+    "/game/history/{playerName}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "playerName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/reputation/{gameId}/investigate/": {
       "post": {
         "description": "",
