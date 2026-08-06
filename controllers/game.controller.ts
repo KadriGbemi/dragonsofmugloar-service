@@ -7,7 +7,11 @@ import { MongoServerError } from "mongodb";
 
 const gameService = new GameService();
 
-export async function startGame(req: Request<StartGameRequestParams>, res: Response, next: NextFunction) {
+export async function startGame(
+  req: Request<StartGameRequestParams>,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const { playerName } = req.params;
 
@@ -19,7 +23,11 @@ export async function startGame(req: Request<StartGameRequestParams>, res: Respo
 
     const existingGame = await games.findOne({ playerName });
     if (existingGame) {
-      return res.error("Player name already exists", 409, "duplicate_player_name");
+      return res.error(
+        "Player name already exists",
+        409,
+        "duplicate_player_name",
+      );
     }
 
     const game = await gameService.startGame();
@@ -33,7 +41,12 @@ export async function startGame(req: Request<StartGameRequestParams>, res: Respo
         createdAt: new Date(),
       });
 
-      return res.success({ ...game, playerName, id: result.insertedId, playerId });
+      return res.success({
+        ...game,
+        playerName,
+        id: result.insertedId,
+        playerId,
+      });
     } catch (err) {
       // Safety net in case two requests race past the findOne check above
       if (err instanceof MongoServerError && err.code === 11000) {
@@ -63,10 +76,14 @@ export async function nextGame(
 
     const existingPlayer = await games.findOne({ playerId, gameId });
 
-    const existingPlayerId = existingPlayer?.playerId
+    const existingPlayerId = existingPlayer?.playerId;
 
     if (!existingPlayerId) {
-      return res.error("Cannot start new game. Player does not exist", 400, 'missing_player');
+      return res.error(
+        "Cannot start new game. Player does not exist",
+        400,
+        "missing_player",
+      );
     }
 
     const game = await gameService.startGame();
@@ -80,16 +97,22 @@ export async function nextGame(
       createdAt: new Date(),
     });
 
-    return res.success({ ...game, playerName, id: result.insertedId, playerId });
-
-
+    return res.success({
+      ...game,
+      playerName,
+      id: result.insertedId,
+      playerId,
+    });
   } catch (error) {
     next(error);
   }
 }
 
-
-export async function gameHistory(req: Request<StartGameRequestParams>, res: Response, next: NextFunction) {
+export async function gameHistory(
+  req: Request<StartGameRequestParams>,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const { playerName } = req.params;
 
@@ -108,7 +131,6 @@ export async function gameHistory(req: Request<StartGameRequestParams>, res: Res
     }
 
     return res.success(results);
-
   } catch (error) {
     next(error);
   }

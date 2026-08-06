@@ -13,7 +13,8 @@ export async function investigateReputation(
     const { gameId } = req.params;
 
     if (gameId) {
-      const reputationResponse = await reputationService.investigateReputation(gameId);
+      const reputationResponse =
+        await reputationService.investigateReputation(gameId);
       return res.success(reputationResponse);
     }
   } catch (error) {

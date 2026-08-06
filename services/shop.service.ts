@@ -1,5 +1,8 @@
 import { dragonsClient } from "../clients/dragonsofmugloar/api.ts";
-import type { ShopItemsResponse, PurchaseShopItemResponse } from "../types/shop.types.ts";
+import type {
+  ShopItemsResponse,
+  PurchaseShopItemResponse,
+} from "../types/shop.types.ts";
 
 export class ShopService {
   public async getShopItems(gameId: string) {
@@ -7,6 +10,8 @@ export class ShopService {
   }
 
   public async purchaseShopItem(gameId: string, itemId: string) {
-    return dragonsClient.post<PurchaseShopItemResponse>(`/${gameId}/shop/buy/${itemId}`);
+    return dragonsClient.post<PurchaseShopItemResponse>(
+      `/${gameId}/shop/buy/${itemId}`,
+    );
   }
 }

@@ -16,14 +16,22 @@ export async function checkGameOver(
     if (!game) {
       return next({
         success: false,
-        error: { message: "Game not found or game expired. Start new game.", status: 404, type: "expired" },
+        error: {
+          message: "Game not found or game expired. Start new game.",
+          status: 404,
+          type: "expired",
+        },
       });
     }
 
     if (game.lives <= 0) {
       return next({
         success: false,
-        error: { message: "Game over no lives remaining. Restart game to continue.", status: 400, type: "game_over" },
+        error: {
+          message: "Game over no lives remaining. Restart game to continue.",
+          status: 400,
+          type: "game_over",
+        },
       });
     }
 
@@ -31,7 +39,11 @@ export async function checkGameOver(
   } catch (err) {
     next({
       success: false,
-      error: { message: "Failed to verify game.", status: 500, type: "verification_failed" },
+      error: {
+        message: "Failed to verify game.",
+        status: 500,
+        type: "verification_failed",
+      },
     });
   }
 }

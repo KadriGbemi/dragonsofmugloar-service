@@ -9,6 +9,5 @@ export async function addDBIndexes(db: Db): Promise<void> {
     games.createIndex({ playerId: 1, gameId: 1 }, { unique: true }),
 
     games.createIndex({ playerName: 1, createdAt: -1 }),
-
   ]);
 }

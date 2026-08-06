@@ -1,5 +1,8 @@
-import type { z } from 'zod';
-import type { gameParamsSchema, playerParamsSchema } from '../schemas/game.schema.ts';
+import type { z } from "zod";
+import type {
+  gameParamsSchema,
+  playerParamsSchema,
+} from "../schemas/game.schema.ts";
 
 export interface GameResponse {
   gameId: string;

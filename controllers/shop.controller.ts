@@ -1,12 +1,19 @@
 import { type NextFunction, type Request, type Response } from "express";
 import type { PurchaseShopItemParams } from "../types/shop.types.ts";
 import { ShopService } from "../services/shop.service.ts";
-import type { GameIdRequestParams, GamesDBResponse } from "../types/index.types.ts";
+import type {
+  GameIdRequestParams,
+  GamesDBResponse,
+} from "../types/index.types.ts";
 import { database } from "../db/config.db.ts";
 
 const shopService = new ShopService();
 
-export async function getShopItems(req: Request<GameIdRequestParams>, res: Response, next: NextFunction) {
+export async function getShopItems(
+  req: Request<GameIdRequestParams>,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const { gameId } = req.params;
 
@@ -32,14 +39,10 @@ export async function purchaseShopItem(
 
       const games = database.db().collection<GamesDBResponse>("games");
 
-      await games.updateOne(
-        { gameId },
-        { $set: { ...result } },
-      );
+      await games.updateOne({ gameId }, { $set: { ...result } });
 
       return res.success(result);
     }
-
   } catch (error) {
     next(error);
   }

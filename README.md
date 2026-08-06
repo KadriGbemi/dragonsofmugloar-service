@@ -6,10 +6,10 @@ An API service for the [Dragons of Mugloar](https://dragonsofmugloar.com/doc/) g
 
 This project runs TypeScript files directly with Node.js, using Node's native TypeScript support. Because of this, the environment must meet the following minimum versions:
 
-| Tool | Minimum version | Version used in this project |
-| --- | --- | --- |
-| Node.js | >= 22.18.0 (or >= 23.6.0 on the v23 line) | v24.19.0 |
-| TypeScript | >= 5.8 | 7.0.2 |
+| Tool       | Minimum version                           | Version used in this project |
+| ---------- | ----------------------------------------- | ---------------------------- |
+| Node.js    | >= 22.18.0 (or >= 23.6.0 on the v23 line) | v24.19.0                     |
+| TypeScript | >= 5.8                                    | 7.0.2                        |
 
 > **Important**
 > Node strips TypeScript types when running `.ts` files natively, but it does not type-check them. This means the app will start and run even if there are type errors in the code. Always run `npx tsc` separately to type-check the project before relying on it.
@@ -107,12 +107,12 @@ The project uses `swagger-autogen` and `swagger-ui-express` to generate and serv
 
 ## Scripts reference
 
-| Script | Command | Purpose |
-| --- | --- | --- |
-| `npm start` | `node --env-file=.env src/app.ts` | Run the app once, no restart on file changes |
-| `npm run dev` | `node --watch --env-file=.env src/app.ts` | Run the app with auto-restart on file changes |
-| `npm run format` | `prettier --write .` | Format the codebase with Prettier |
-| `npx tsc` | — | Type-check the project (does not run the app) |
+| Script           | Command                                   | Purpose                                       |
+| ---------------- | ----------------------------------------- | --------------------------------------------- |
+| `npm start`      | `node --env-file=.env src/app.ts`         | Run the app once, no restart on file changes  |
+| `npm run dev`    | `node --watch --env-file=.env src/app.ts` | Run the app with auto-restart on file changes |
+| `npm run format` | `prettier --write .`                      | Format the codebase with Prettier             |
+| `npx tsc`        | —                                         | Type-check the project (does not run the app) |
 
 ## License
 
