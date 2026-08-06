@@ -7,14 +7,27 @@
   },
   "host": "localhost:3000",
   "basePath": "/",
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
-    "/game/start": {
+    "/game/start/{playerName}": {
       "post": {
         "description": "",
+        "parameters": [
+          {
+            "name": "playerName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
@@ -49,13 +62,13 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/reputation/{gameId}/investigate/reputation": {
+    "/reputation/{gameId}/investigate/": {
       "post": {
         "description": "",
         "parameters": [
@@ -69,6 +82,90 @@
         "responses": {
           "201": {
             "description": "Created"
+          }
+        }
+      }
+    },
+    "/ads/{gameId}/messages": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/ads/{gameId}/solve/{adId}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "adId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/shop/{gameId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/shop/{gameId}/buy/{itemId}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }

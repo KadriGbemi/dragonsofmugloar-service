@@ -8,6 +8,8 @@ import { fileURLToPath } from "url";
 
 import gameRouter from "../routes/game.routes.ts";
 import reputationRouter from "../routes/reputation.routes.ts";
+import adsRouter from "../routes/ads.routes.ts";
+import shopRouter from "../routes/shop.routes.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,6 +19,8 @@ app.use(express.json());
 
 app.use("/game", gameRouter);
 app.use("/reputation", reputationRouter);
+app.use("/ads", adsRouter);
+app.use("/shop", shopRouter);
 
 // --- SWAGGER AUTOGEN & SERVER STARTUP ---
 const outputFile = path.join(__dirname, "../swagger-output.json");

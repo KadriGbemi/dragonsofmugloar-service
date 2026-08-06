@@ -3,7 +3,7 @@ import type { GameResponse } from "../types/game.types.ts";
 
 export class GameService {
   public async startGame() {
-    return dragonsClient.post<GameResponse>("/game/start");
+    return dragonsClient.post<GameResponse>('game/start');
   }
 
   public async getGame(gameId: string) {

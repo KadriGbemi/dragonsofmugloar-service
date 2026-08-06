@@ -3,6 +3,6 @@ import { investigateReputation } from "../controllers/reputation.controller.ts";
 
 const router = Router();
 
-router.post("/:gameId/investigate/reputation", investigateReputation);
+router.post("/:gameId/investigate/", investigateReputation);
 
 export default router;
