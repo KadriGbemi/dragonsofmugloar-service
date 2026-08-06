@@ -4,6 +4,8 @@ import axios, {
   type AxiosRequestConfig,
 } from "axios";
 
+import type { APIResponse, APIError } from "../../types/index.types.ts";
+
 export class DragonsOfMugloarAPIClient {
   private readonly client: AxiosInstance;
 
@@ -34,18 +36,28 @@ export class DragonsOfMugloarAPIClient {
     );
   }
 
-  private handleError(error: AxiosError): Error {
+  private handleError(error: AxiosError): APIResponse<never> {
     if (error.response) {
-      return new Error(
-        `Dragons of Mugloar API responded with ${error.response.status}`,
-      );
+      if (error.response.status === 404) {
+        return {
+          success: false, error: { message: "Game not found or game expired.", status: 404, type: "expired" }
+        };
+      }
+
+      return {
+        success: false, error: {
+          message: `Dragons of Mugloar API responded with ${error.response.status}`,
+          status: error.response.status,
+          type: "api_error"
+        }
+      };
     }
 
     if (error.request) {
-      return new Error("Dragons of Mugloar API is unavailable.");
+      return { success: false, error: { message: "Dragons of Mugloar API is unavailable.", status: 503, type: "unavailable" } };
     }
 
-    return new Error(error.message);
+    return { success: false, error: { message: error.message, status: 500, type: "unknown" } };
   }
 
   public async get<T>(url: string): Promise<T> {

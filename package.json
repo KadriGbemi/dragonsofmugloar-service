@@ -2,7 +2,7 @@
   "name": "bigbanktest",
   "version": "1.0.0",
   "type": "module",
-  "description": "CLI and API service for the Dragons of Mugloar game API, built on Express",
+  "description": "API service for the Dragons of Mugloar game API, built on Express",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

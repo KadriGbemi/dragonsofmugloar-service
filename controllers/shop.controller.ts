@@ -12,7 +12,7 @@ export async function getShopItems(req: Request<GameIdRequestParams>, res: Respo
 
     if (gameId) {
       const items = await shopService.getShopItems(gameId);
-      return res.json(items);
+      return res.success(items);
     }
   } catch (error) {
     next(error);
@@ -36,9 +36,8 @@ export async function purchaseShopItem(
           { gameId },
           { $set: { ...result } },
         );
-     
 
-      return res.json(result);
+      return res.success(result);
     }
 
   } catch (error) {

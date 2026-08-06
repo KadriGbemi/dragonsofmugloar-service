@@ -12,16 +12,14 @@ export async function startGame(req: Request<StartGameRequestParams>, res: Respo
     const { playerName } = req.params;
 
     if (!playerName) {
-      res.status(400).json({ error: "Player name is required" });
-      return;
+      return res.error("Player name is required", 400);
     }
 
     const games = database.db().collection<GamesDBResponse>("games");
 
     const existingGame = await games.findOne({ playerName });
     if (existingGame) {
-      res.status(409).json({ error: "Player name already exists" });
-      return;
+      return res.error("Player name already exists", 409, "duplicate_player_name");
     }
 
     const game = await gameService.startGame();
@@ -35,11 +33,11 @@ export async function startGame(req: Request<StartGameRequestParams>, res: Respo
         createdAt: new Date(),
       });
 
-      res.status(201).json({ ...game, playerName, id: result.insertedId, playerId });
+      return res.success({ ...game, playerName, id: result.insertedId, playerId });
     } catch (err) {
       // Safety net in case two requests race past the findOne check above
       if (err instanceof MongoServerError && err.code === 11000) {
-        res.status(409).json({ error: "Player name already exists" });
+        res.error("Player name already exists", 409, "duplicate_player_name");
         return;
       }
       throw err;
@@ -49,7 +47,7 @@ export async function startGame(req: Request<StartGameRequestParams>, res: Respo
   }
 }
 
-export async function restartGame(
+export async function nextGame(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -58,35 +56,32 @@ export async function restartGame(
     const { playerId, gameId } = req.params;
 
     if (!playerId || !gameId) {
-      res.status(400).json({ error: "Player ID and Game ID are required" });
-      return;
+      return res.error("Player ID and Game ID are required", 400);
     }
 
     const games = database.db().collection<GamesDBResponse>("games");
 
     const existingPlayer = await games.findOne({ playerId, gameId });
 
-    const previousLives = existingPlayer?.lives || 0;
+    const existingPlayerId = existingPlayer?.playerId
 
-    if (previousLives >= 0) {
-      return res.status(409).json({ error: "Cannot restart game until all lives are used up" });
+    if (!existingPlayerId) {
+      return res.error("Cannot start new game. Player does not exist", 400, 'missing_player');
     }
 
-    if (existingPlayer) {
-      const game = await gameService.startGame();
+    const game = await gameService.startGame();
 
-      const playerName = existingPlayer?.playerName;
+    const playerName = existingPlayer?.playerName;
 
-      const playerId = crypto.randomUUID();
-      const result = await games.insertOne({
-        ...game,
-        playerName,
-        playerId,
-        createdAt: new Date(),
-      });
+    const result = await games.insertOne({
+      ...game,
+      playerName,
+      playerId: existingPlayerId,
+      createdAt: new Date(),
+    });
 
-      return res.status(201).json({ ...game, playerName, id: result.insertedId, playerId });
-    }
+    return res.success({ ...game, playerName, id: result.insertedId, playerId });
+
 
   } catch (error) {
     next(error);

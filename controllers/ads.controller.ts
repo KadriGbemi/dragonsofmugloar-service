@@ -13,7 +13,7 @@ export async function getAds(req: Request<GameIdRequestParams>, res: Response, n
 
     if (gameId) {
       const ads = await adsService.getAds(gameId);
-      return res.json(ads);
+      return res.success(ads);
     }
   } catch (error) {
     next(error);
@@ -29,16 +29,16 @@ export async function solveAd(
     const { gameId, adId } = req.params;
 
     const games = database.db().collection<GamesDBResponse>("games");
-    
-    const result = await adsService.solveAd(gameId, adId);
+
+    const {success, ...result} = await adsService.solveAd(gameId, adId);
 
 
     await games.updateOne(
       { gameId },
-      { $set: { ...result, adSuccess: result?.success } },
+      { $set: { ...result, adSuccess: success } },
     );
 
-    return res.json(result);
+    return res.success(result);
   } catch (error) {
     next(error);
   }

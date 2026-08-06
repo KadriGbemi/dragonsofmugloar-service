@@ -1,6 +1,6 @@
 # Dragons of Mugloar Service
 
-A CLI and API service for the [Dragons of Mugloar](https://dragonsofmugloar.com/doc/) game API, built on Express.
+An API service for the [Dragons of Mugloar](https://dragonsofmugloar.com/doc/) game API, built on Express.
 
 ## Requirements
 

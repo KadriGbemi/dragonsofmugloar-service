@@ -1,4 +1,6 @@
 import express, { type Express } from "express";
+import type { Request, Response, NextFunction } from "express";
+import type { APIError } from "../types/index.types.ts";
 import swaggerUi from "swagger-ui-express";
 import swaggerAutogen from "swagger-autogen";
 import { swaggerDoc, swaggerOptions } from "../swagger.config.ts";
@@ -11,6 +13,8 @@ import reputationRouter from "../routes/reputation.routes.ts";
 import adsRouter from "../routes/ads.routes.ts";
 import shopRouter from "../routes/shop.routes.ts";
 import { database } from "../config/db.ts";
+import { responseMiddleware } from "../middleware/response.middleware.ts";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,10 +22,14 @@ const __dirname = dirname(__filename);
 const app: Express = express();
 app.use(express.json());
 
+app.use(responseMiddleware);
+
 app.use("/game", gameRouter);
 app.use("/reputation", reputationRouter);
 app.use("/ads", adsRouter);
 app.use("/shop", shopRouter);
+
+app.use((err: APIError, __: Request, res: Response, ___: NextFunction,) => res.json(err));
 
 // --- SWAGGER AUTOGEN & DB CONNECTION & SERVER STARTUP ---
 const outputFile = path.join(__dirname, "../swagger-output.json");
