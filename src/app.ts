@@ -10,6 +10,7 @@ import gameRouter from "../routes/game.routes.ts";
 import reputationRouter from "../routes/reputation.routes.ts";
 import adsRouter from "../routes/ads.routes.ts";
 import shopRouter from "../routes/shop.routes.ts";
+import { database } from "../config/db.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,12 +23,12 @@ app.use("/reputation", reputationRouter);
 app.use("/ads", adsRouter);
 app.use("/shop", shopRouter);
 
-// --- SWAGGER AUTOGEN & SERVER STARTUP ---
+// --- SWAGGER AUTOGEN & DB CONNECTION & SERVER STARTUP ---
 const outputFile = path.join(__dirname, "../swagger-output.json");
 const endpointsFiles = [__filename];
 
 // Swagger Autogen will generate the swagger-output.json file based on the routes and comments in this file
-swaggerAutogen()(outputFile, endpointsFiles, swaggerDoc).then(() => {
+swaggerAutogen()(outputFile, endpointsFiles, swaggerDoc).then(async () => {
   // Read the newly generated file
   const swaggerDocument = JSON.parse(fs.readFileSync(outputFile, "utf8"));
 
@@ -38,9 +39,24 @@ swaggerAutogen()(outputFile, endpointsFiles, swaggerDoc).then(() => {
     swaggerUi.setup(swaggerDocument, swaggerOptions),
   );
 
+  // Connect to MongoDB before accepting traffic
+  await database.connect();
+
   // Start the server
-  app.listen(3000, () => {
+  const server = app.listen(3000, () => {
     console.log("Server running on http://localhost:3000");
     console.log("Swagger documentation available at http://localhost:3000/");
   });
+
+  // Graceful shutdown
+  const shutdown = async (signal: string) => {
+    console.log(`${signal} received, shutting down gracefully`);
+    server.close(async () => {
+      await database.close();
+      process.exit(0);
+    });
+  };
+
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
 });
