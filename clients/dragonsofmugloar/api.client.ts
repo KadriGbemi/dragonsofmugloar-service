@@ -52,7 +52,7 @@ export class DragonsOfMugloarAPIClient {
       return {
         success: false,
         error: {
-          message: `Dragons of Mugloar API responded with ${error.response.status}`,
+          message: `Error: ${error.response.status}, We couldn't reach the game service right now. Please try again shortly.`,
           status: error.response.status,
           type: "api_error",
         },
@@ -63,7 +63,7 @@ export class DragonsOfMugloarAPIClient {
       return {
         success: false,
         error: {
-          message: "Dragons of Mugloar API is unavailable.",
+          message: "Game service is currently unavailable. Try again",
           status: 503,
           type: "unavailable",
         },
