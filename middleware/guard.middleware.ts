@@ -14,22 +14,20 @@ export async function checkGameOver(
     const game = await games.findOne({ gameId });
 
     if (!game) {
-      return next({
+      return res.status(404).json({
         success: false,
         error: {
           message: "Game not found or game expired. Start new game.",
-          status: 404,
           type: "expired",
         },
       });
     }
 
     if (game.lives <= 0) {
-      return next({
+      return res.status(400).json({
         success: false,
         error: {
           message: "Game over no lives remaining. Restart game to continue.",
-          status: 400,
           type: "game_over",
         },
       });
@@ -37,11 +35,10 @@ export async function checkGameOver(
 
     next();
   } catch (err) {
-    next({
+   return res.status(500).json({
       success: false,
       error: {
         message: "Failed to verify game.",
-        status: 500,
         type: "verification_failed",
       },
     });

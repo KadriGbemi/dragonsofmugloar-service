@@ -11,6 +11,24 @@
     "http"
   ],
   "paths": {
+    "/game/{gameId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/game/start/{playerName}": {
       "post": {
         "description": "",

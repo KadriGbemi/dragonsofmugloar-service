@@ -78,3 +78,29 @@ export async function gameHistory(
     next(error);
   }
 }
+
+export async function getGame(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { gameId } = req.params;
+
+    if (!gameId) {
+      return res.error("Game ID is required", 400);
+    }
+
+    const games = database.db().collection<GamesDBResponse>("games");
+
+    const game = await games.findOne({ gameId });
+
+    if (!game) {
+      return res.error("Game not found", 404);
+    }
+
+    return res.success(game);
+  } catch (error) {
+    next(error);
+  }
+}
