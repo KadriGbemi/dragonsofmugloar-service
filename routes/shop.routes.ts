@@ -16,6 +16,7 @@ const router = Router();
 router.param("gameId", checkGameOver);
 
 router.get("/list/:gameId", validate(gameParamsSchema, "params"), getShopItems);
+
 router.post(
   "/:gameId/buy/:itemId",
   validate(purchaseItemParamsSchema, "params"),

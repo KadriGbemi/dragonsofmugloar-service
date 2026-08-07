@@ -17,7 +17,7 @@ export const solveAdsParamsSchema = z.object({
 });
 
 export const purchaseItemParamsSchema = z.object({
-  adId: z.string().min(1, "AdId cannot be empty"),
+  itemId: z.string().min(1, "ItemId cannot be empty"),
   gameId: z.string().min(1, "gameId cannot be empty"),
 });
 

@@ -27,7 +27,7 @@ export async function checkGameOver(
       return res.status(400).json({
         success: false,
         error: {
-          message: "Game over no lives remaining. Restart game to continue.",
+          message: "Game over no lives remaining. Start new game to continue.",
           type: "game_over",
         },
       });
