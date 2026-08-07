@@ -4,7 +4,7 @@ import axios, {
   type AxiosRequestConfig,
 } from "axios";
 
-import type { APIResponse, APIError } from "../../types/index.types.ts";
+import type { APIResponse } from "../../types/index.types.ts";
 
 export class DragonsOfMugloarAPIClient {
   private readonly client: AxiosInstance;

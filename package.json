@@ -5,7 +5,9 @@
   "description": "API service for the Dragons of Mugloar game API, built on Express",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "dev": "node --watch --env-file=.env src/app.ts",
     "start": "node --env-file=.env src/app.ts",
     "format": "prettier --write ."
@@ -42,7 +44,9 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^26.1.2",
     "@types/swagger-ui-express": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.10",
     "prettier": "^3.9.6",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
   }
 }
