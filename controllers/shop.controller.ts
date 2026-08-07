@@ -39,7 +39,7 @@ export async function purchaseShopItem(
 
       const games = database.db().collection<GamesDBResponse>("games");
 
-      await games.updateOne({ gameId }, { $set: { ...result } });
+      await games.updateOne({ gameId }, { $set: { ...result, updatedAt: new Date() } });
 
       return res.success(result);
     }

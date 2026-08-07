@@ -11,12 +11,13 @@ export function validate<T>(
     const result = schema.safeParse(req[target]);
 
     if (!result.success) {
-      const errors = (result.error as ZodError).issues.map((issue) => ({
-        path: issue.path.join("."),
-        message: issue.message,
-      }));
-      res.status(400).json({ error: "Validation failed", details: errors });
-      return;
+      const errorDetails = result.error.issues
+        .map((issue) => `${issue.path.join(".") || target}: ${issue.message}`)
+        .join(", ");
+
+      const errorMessage = `Validation failed: ${errorDetails}`;
+
+      return res.error(errorMessage, 400, "VALIDATION_ERROR");
     }
 
     req[target] = result.data as any;

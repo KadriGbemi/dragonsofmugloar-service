@@ -1,6 +1,6 @@
 import { type NextFunction, type Request, type Response } from "express";
 import { GameService } from "../services/game.service.ts";
-import type { StartGameRequestParams } from "../types/game.types.ts";
+import type { StartGameRequestParams, GameHistoryRequestParams } from "../types/game.types.ts";
 import type { GamesDBResponse } from "../types/index.types.ts";
 import { database } from "../db/config.db.ts";
 import { MongoServerError } from "mongodb";
@@ -20,16 +20,7 @@ export async function startGame(
     }
 
     const games = database.db().collection<GamesDBResponse>("games");
-
-    const existingGame = await games.findOne({ playerName });
-    if (existingGame) {
-      return res.error(
-        "Player name already exists",
-        409,
-        "duplicate_player_name",
-      );
-    }
-
+    
     const game = await gameService.startGame();
 
     try {
@@ -60,69 +51,21 @@ export async function startGame(
   }
 }
 
-export async function nextGame(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  try {
-    const { playerId, gameId } = req.params;
-
-    if (!playerId || !gameId) {
-      return res.error("Player ID and Game ID are required", 400);
-    }
-
-    const games = database.db().collection<GamesDBResponse>("games");
-
-    const existingPlayer = await games.findOne({ playerId, gameId });
-
-    const existingPlayerId = existingPlayer?.playerId;
-
-    if (!existingPlayerId) {
-      return res.error(
-        "Cannot start new game. Player does not exist",
-        400,
-        "missing_player",
-      );
-    }
-
-    const game = await gameService.startGame();
-
-    const playerName = existingPlayer?.playerName;
-
-    const result = await games.insertOne({
-      ...game,
-      playerName,
-      playerId: existingPlayerId,
-      createdAt: new Date(),
-    });
-
-    return res.success({
-      ...game,
-      playerName,
-      id: result.insertedId,
-      playerId,
-    });
-  } catch (error) {
-    next(error);
-  }
-}
-
 export async function gameHistory(
-  req: Request<StartGameRequestParams>,
+  req: Request<GameHistoryRequestParams>,
   res: Response,
   next: NextFunction,
 ) {
   try {
-    const { playerName } = req.params;
+    const { playerId } = req.params;
 
-    if (!playerName) {
-      return res.error("Player name is required", 400);
+    if (!playerId) {
+      return res.error("Player ID is required", 400);
     }
 
     const games = database.db().collection<GamesDBResponse>("games");
     const results = await games
-      .find({ playerName })
+      .find({ playerId })
       .sort({ createdAt: -1 })
       .toArray();
 

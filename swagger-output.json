@@ -29,36 +29,12 @@
         }
       }
     },
-    "/game/{playerId}/{gameId}/next": {
+    "/game/history/{playerId}": {
       "post": {
         "description": "",
         "parameters": [
           {
             "name": "playerId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "gameId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/game/history/{playerName}": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "playerName",
             "in": "path",
             "required": true,
             "type": "string"

@@ -1,12 +1,11 @@
 import { Router } from "express";
 import {
   startGame,
-  nextGame,
   gameHistory,
 } from "../controllers/game.controller.ts";
 import {
   playerParamsSchema,
-  restartGameParamsSchema,
+  playerIdParamsSchema
 } from "../schemas/game.schema.ts";
 import { validate } from "../middleware/validate.middleware.ts";
 
@@ -19,14 +18,8 @@ router.post(
 );
 
 router.post(
-  "/:playerId/:gameId/next",
-  validate(restartGameParamsSchema, "params"),
-  nextGame,
-);
-
-router.post(
-  "/history/:playerName",
-  validate(playerParamsSchema, "params"),
+  "/history/:playerId",
+  validate(playerIdParamsSchema, "params"),
   gameHistory,
 );
 

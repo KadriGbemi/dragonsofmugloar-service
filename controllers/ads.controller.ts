@@ -41,7 +41,7 @@ export async function solveAd(
 
     await games.updateOne(
       { gameId },
-      { $set: { ...result, adSuccess: success } },
+      { $set: { ...result, adSuccess: success, updatedAt: new Date() } },
     );
 
     return res.success(result);
