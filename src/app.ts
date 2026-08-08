@@ -19,6 +19,11 @@ import { database } from "../db/config.db.ts";
 import { responseMiddleware } from "../middleware/response.middleware.ts";
 import { addDBIndexes } from "../db/indexes.db.ts";
 
+export async function initializeDatabase() {
+  await database.connect();
+  await addDBIndexes(database.db());
+}
+
 const app: Express = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -112,10 +117,10 @@ app.use((err: APIError, __: Request, res: Response, ___: NextFunction) =>
   res.json(err),
 );
 
-await database.connect();
-await addDBIndexes(database.db());
+await initializeDatabase();
 
 if (process.env.NODE_ENV !== "production") {
+
   // Start the server
   const server = app.listen(process.env.PORT || 3000, () => {
     console.log("Server running on http://localhost:3000");
