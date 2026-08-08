@@ -107,9 +107,10 @@ const swaggerDocument = JSON.parse(
   fs.readFileSync(swaggerOutputPath, "utf8"),
 );
 
-app.use(
+app.use("/", swaggerUi.serve);
+
+app.get(
   "/",
-  swaggerUi.serve,
   swaggerUi.setup(swaggerDocument, swaggerOptions),
 );
 
