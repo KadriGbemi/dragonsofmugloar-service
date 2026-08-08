@@ -4,7 +4,7 @@ export const swaggerDoc = {
     version: "1.0.0",
   },
   host: "",
-  schemes: ["https", "http"],
+  schemes: [process?.env?.NODE_ENV === "production" ? "https" : "http"],
 };
 
 export const swaggerOptions = {
