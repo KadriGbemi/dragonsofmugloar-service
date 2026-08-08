@@ -5,15 +5,12 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import helmet from "helmet";
 import hpp from "hpp";
+import path from "path";
 import rateLimit from "express-rate-limit";
+import fs from "fs";
 import type { APIError } from "../types/index.types.ts";
 import swaggerUi from "swagger-ui-express";
-import swaggerAutogen from "swagger-autogen";
-import { swaggerDoc, swaggerOptions } from "../swagger.config.ts";
-import fs from "fs";
-import path, { dirname } from "path";
-import { fileURLToPath } from "url";
-
+import { swaggerOptions } from "../swagger.config.ts";
 import gameRouter from "../routes/game.routes.ts";
 import reputationRouter from "../routes/reputation.routes.ts";
 import adsRouter from "../routes/ads.routes.ts";
@@ -21,9 +18,6 @@ import shopRouter from "../routes/shop.routes.ts";
 import { database } from "../db/config.db.ts";
 import { responseMiddleware } from "../middleware/response.middleware.ts";
 import { addDBIndexes } from "../db/indexes.db.ts";
-
-const currentFile = fileURLToPath(import.meta.url);
-const currentDir = dirname(currentFile);
 
 const app: Express = express();
 
@@ -99,50 +93,46 @@ app.use("/reputation", reputationRouter);
 app.use("/ads", adsRouter);
 app.use("/shop", shopRouter);
 
-// --- SWAGGER AUTOGEN & DB CONNECTION & SERVER STARTUP ---
-const outputFile = path.join(currentDir, "../swagger-output.json");
-const endpointsFiles = [currentFile];
+const swaggerOutputPath = path.join(
+  process.cwd(),
+  "swagger-output.json",
+);
 
-// Swagger Autogen will generate the swagger-output.json file based on the routes and comments in this file
-swaggerAutogen()(outputFile, endpointsFiles, swaggerDoc).then(async () => {
-  // Read the newly generated file
-  const swaggerDocument = JSON.parse(fs.readFileSync(outputFile, "utf8"));
+const swaggerDocument = JSON.parse(
+  fs.readFileSync(swaggerOutputPath, "utf8"),
+);
 
-  // Mount the Swagger UI on the root route
-  app.use(
-    "/",
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerDocument, swaggerOptions),
-  );
+app.use(
+  "/",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, swaggerOptions),
+);
 
-  app.use((err: APIError, __: Request, res: Response, ___: NextFunction) =>
-    res.json(err),
-  );
+app.use((err: APIError, __: Request, res: Response, ___: NextFunction) =>
+  res.json(err),
+);
 
-  // Connect to MongoDB before accepting traffic
-  await database.connect();
-  await addDBIndexes(database.db());
+await database.connect();
+await addDBIndexes(database.db());
 
-  if (process.env.NODE_ENV !== "production") {
-    // Start the server
-    const server = app.listen(process.env.PORT || 3000, () => {
-      console.log("Server running on http://localhost:3000");
-      console.log("Swagger documentation available at http://localhost:3000/");
+if (process.env.NODE_ENV !== "production") {
+  // Start the server
+  const server = app.listen(process.env.PORT || 3000, () => {
+    console.log("Server running on http://localhost:3000");
+    console.log("Swagger documentation available at http://localhost:3000/");
+  });
+
+  // Graceful shutdown
+  const shutdown = async (signal: string) => {
+    console.log(`${signal} received, shutting down gracefully`);
+    server.close(async () => {
+      await database.close();
+      process.exit(0);
     });
+  };
 
-    // Graceful shutdown
-    const shutdown = async (signal: string) => {
-      console.log(`${signal} received, shutting down gracefully`);
-      server.close(async () => {
-        await database.close();
-        process.exit(0);
-      });
-    };
-
-    process.on("SIGTERM", () => shutdown("SIGTERM"));
-    process.on("SIGINT", () => shutdown("SIGINT"));
-  }
-});
-
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
+}
 
 export default app;

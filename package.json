@@ -10,7 +10,8 @@
     "test:coverage": "vitest run --coverage",
     "dev": "node --watch --env-file=.env src/app.ts",
     "start": "node --env-file=.env src/app.ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "swagger": "node scripts/generate.swagger.ts"
   },
   "repository": {
     "type": "git",
