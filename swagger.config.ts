@@ -3,7 +3,7 @@ export const swaggerDoc = {
     title: "Dragons of Mugloar API",
     version: "1.0.0",
   },
-  host: process.env.BACKEND_HOST || "localhost:3000",
+  host: "",
   schemes: ["https", "http"],
 };
 
