@@ -9,4 +9,9 @@ export const swaggerDoc = {
 
 export const swaggerOptions = {
   customSiteTitle: "BigBank Test API",
+  customCssUrl: 'https://unpkg.com/swagger-ui-dist@5/swagger-ui.css',
+  customJs: [
+    'https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js',
+    'https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js',
+  ],
 };
