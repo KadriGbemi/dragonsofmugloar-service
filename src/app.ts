@@ -118,25 +118,24 @@ app.use((err: APIError, __: Request, res: Response, ___: NextFunction) =>
 );
 
 if (process.env.NODE_ENV !== "production") {
-  await initializeDatabase();
-
-  // Start the server
-  const server = app.listen(process.env.PORT || 3000, () => {
-    console.log("Server running on http://localhost:3000");
-    console.log("Swagger documentation available at http://localhost:3000/");
-  });
-
-  // Graceful shutdown
-  const shutdown = async (signal: string) => {
-    console.log(`${signal} received, shutting down gracefully`);
-    server.close(async () => {
-      await database.close();
-      process.exit(0);
+  initializeDatabase().then(() => {
+    const server = app.listen(process.env.PORT || 3000, () => {
+      console.log("Server running on http://localhost:3000");
+      console.log("Swagger documentation available at http://localhost:3000/");
     });
-  };
 
-  process.on("SIGTERM", () => shutdown("SIGTERM"));
-  process.on("SIGINT", () => shutdown("SIGINT"));
+    const shutdown = async (signal: string) => {
+      console.log(`${signal} received, shutting down gracefully`);
+
+      server.close(async () => {
+        await database.close();
+        process.exit(0);
+      });
+    };
+
+    process.on("SIGTERM", () => shutdown("SIGTERM"));
+    process.on("SIGINT", () => shutdown("SIGINT"));
+  });
 }
 
 export default app;
