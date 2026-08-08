@@ -117,9 +117,8 @@ app.use((err: APIError, __: Request, res: Response, ___: NextFunction) =>
   res.json(err),
 );
 
-await initializeDatabase();
-
 if (process.env.NODE_ENV !== "production") {
+  await initializeDatabase();
 
   // Start the server
   const server = app.listen(process.env.PORT || 3000, () => {
