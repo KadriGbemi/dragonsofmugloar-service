@@ -23,76 +23,76 @@ vi.mock("../db/config.db.ts", () => ({
     })),
   },
 }));
- 
 
 const mockAdsService = vi.mocked(AdsService).mock.results[0]!.value as {
-    getAds: ReturnType<typeof vi.fn>;
+  getAds: ReturnType<typeof vi.fn>;
 };
 
 function mockRes(): Response {
-    return { success: vi.fn(), error: vi.fn() } as unknown as Response;
+  return { success: vi.fn(), error: vi.fn() } as unknown as Response;
 }
 
 function mockReq(gameId?: string): Request<GameIdRequestParams> {
-    return { params: { gameId } } as unknown as Request<GameIdRequestParams>;
+  return { params: { gameId } } as unknown as Request<GameIdRequestParams>;
 }
 
 describe("ads.controller getAds function", () => {
-    let next: NextFunction;
+  let next: NextFunction;
 
-    beforeEach(() => {
-        mockAdsService.getAds.mockReset();
-        next = vi.fn();
-    });
+  beforeEach(() => {
+    mockAdsService.getAds.mockReset();
+    next = vi.fn();
+  });
 
-    it("fetches ads for the given gameId and responds via res.success", async () => {
-        const ads: AdItem[] = [
-            {
-                "adId": "zY0BCCFb",
-                "message": "Help Vepkhia Auteberry to transport a magic house to steppe in Pencrest",
-                "reward": 20,
-                "expiresIn": 7,
-                "encrypted": null,
-                "probability": "Gamble"
-            },
-        ];
-        mockAdsService.getAds.mockResolvedValue(ads);
+  it("fetches ads for the given gameId and responds via res.success", async () => {
+    const ads: AdItem[] = [
+      {
+        adId: "zY0BCCFb",
+        message:
+          "Help Vepkhia Auteberry to transport a magic house to steppe in Pencrest",
+        reward: 20,
+        expiresIn: 7,
+        encrypted: null,
+        probability: "Gamble",
+      },
+    ];
+    mockAdsService.getAds.mockResolvedValue(ads);
 
-        const req = mockReq("jiRpdWHM");
-        const res = mockRes();
+    const req = mockReq("jiRpdWHM");
+    const res = mockRes();
 
-        await getAds(req, res, next);
+    await getAds(req, res, next);
 
-        expect(mockAdsService.getAds).toHaveBeenCalledWith("jiRpdWHM");
-        expect(mockAdsService.getAds).toHaveBeenCalledTimes(1);
-        expect(res.success).toHaveBeenCalledWith(ads);
-        expect(res.error).not.toHaveBeenCalled();
-        expect(next).not.toHaveBeenCalled();
-    });
+    expect(mockAdsService.getAds).toHaveBeenCalledWith("jiRpdWHM");
+    expect(mockAdsService.getAds).toHaveBeenCalledTimes(1);
+    expect(res.success).toHaveBeenCalledWith(ads);
+    expect(res.error).not.toHaveBeenCalled();
+    expect(next).not.toHaveBeenCalled();
+  });
 
-    it("forwards service errors to next() instead of responding", async () => {
-        const error = new Error("Dragons of Mugloar API is unavailable.");
-        mockAdsService.getAds.mockRejectedValue(error);
+  it("forwards service errors to next() instead of responding", async () => {
+    const error = new Error("Dragons of Mugloar API is unavailable.");
+    mockAdsService.getAds.mockRejectedValue(error);
 
-        const req = mockReq("jiRpdWHM");
-        const res = mockRes();
+    const req = mockReq("jiRpdWHM");
+    const res = mockRes();
 
-        await getAds(req, res, next);
+    await getAds(req, res, next);
 
-        expect(next).toHaveBeenCalledWith(error);
-        expect(next).toHaveBeenCalledTimes(1);
-        expect(res.success).not.toHaveBeenCalled();
-    });
+    expect(next).toHaveBeenCalledWith(error);
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(res.success).not.toHaveBeenCalled();
+  });
 
-    it("sends no response at all when gameId is missing", async () => {
-        const req = mockReq("");
-        const res = mockRes();
+  it("sends no response at all when gameId is missing", async () => {
+    const req = mockReq("");
+    const res = mockRes();
 
-        await getAds(req, res, next);
+    await getAds(req, res, next);
 
-        expect(mockAdsService.getAds).not.toHaveBeenCalled();
-        expect(res.success).not.toHaveBeenCalled();
-        expect(res.error).not.toHaveBeenCalled();
-        expect(next).not.toHaveBeenCalled();
-    });
+    expect(mockAdsService.getAds).not.toHaveBeenCalled();
+    expect(res.success).not.toHaveBeenCalled();
+    expect(res.error).not.toHaveBeenCalled();
+    expect(next).not.toHaveBeenCalled();
+  });
 });

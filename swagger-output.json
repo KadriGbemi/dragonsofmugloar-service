@@ -48,7 +48,7 @@
       }
     },
     "/game/history/{playerId}": {
-      "post": {
+      "get": {
         "description": "",
         "parameters": [
           {

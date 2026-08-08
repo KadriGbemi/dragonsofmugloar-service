@@ -1,6 +1,9 @@
 import { type NextFunction, type Request, type Response } from "express";
 import { GameService } from "../services/game.service.ts";
-import type { StartGameRequestParams, GameHistoryRequestParams } from "../types/game.types.ts";
+import type {
+  StartGameRequestParams,
+  GameHistoryRequestParams,
+} from "../types/game.types.ts";
 import type { GamesDBResponse } from "../types/index.types.ts";
 import { database } from "../db/config.db.ts";
 import { MongoServerError } from "mongodb";
@@ -19,12 +22,14 @@ export async function startGame(
       return res.error("Player name is required", 400);
     }
 
-    const games = database.db().collection<GamesDBResponse>("games");
-    
-    const game = await gameService.startGame();
-
     try {
-      const playerId = crypto.randomUUID();
+      const games = database.db().collection<GamesDBResponse>("games");
+
+      const existingPlayer = await games.findOne({ playerName });
+
+      const game = await gameService.startGame();
+
+      const playerId = existingPlayer?.playerId ?? crypto.randomUUID();
       const result = await games.insertOne({
         ...game,
         playerName,
@@ -79,11 +84,7 @@ export async function gameHistory(
   }
 }
 
-export async function getGame(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export async function getGame(req: Request, res: Response, next: NextFunction) {
   try {
     const { gameId } = req.params;
 
