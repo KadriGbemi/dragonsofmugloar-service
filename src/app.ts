@@ -22,8 +22,8 @@ import { database } from "../db/config.db.ts";
 import { responseMiddleware } from "../middleware/response.middleware.ts";
 import { addDBIndexes } from "../db/indexes.db.ts";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const currentFile = fileURLToPath(import.meta.url);
+const currentDir = dirname(currentFile);
 
 const app: Express = express();
 
@@ -100,8 +100,8 @@ app.use("/ads", adsRouter);
 app.use("/shop", shopRouter);
 
 // --- SWAGGER AUTOGEN & DB CONNECTION & SERVER STARTUP ---
-const outputFile = path.join(__dirname, "../swagger-output.json");
-const endpointsFiles = [__filename];
+const outputFile = path.join(currentDir, "../swagger-output.json");
+const endpointsFiles = [currentFile];
 
 // Swagger Autogen will generate the swagger-output.json file based on the routes and comments in this file
 swaggerAutogen()(outputFile, endpointsFiles, swaggerDoc).then(async () => {
