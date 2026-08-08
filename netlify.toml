@@ -5,6 +5,11 @@
   included_files = ["swagger-output.json"]
 
 [[redirects]]
+  from = "/"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
