@@ -39,8 +39,8 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        "script-src": ["'self'", "'unsafe-inline'"],
-        "style-src": ["'self'", "'unsafe-inline'"],
+        "script-src": ["'self'", "'unsafe-inline'", "https://unpkg.com"],
+        "style-src": ["'self'", "'unsafe-inline'", "https://unpkg.com"],
         "img-src": ["'self'", "data:", "validator.swagger.io"],
       },
     },
